@@ -2,28 +2,39 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const app = express();
-app.use(bodyParser.urlencoded({extended:true}));
+
+var items = ["Wake up!"];
+
 app.set("view engine", "ejs");
+
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(express.static("public"));
 
 app.get("/", function(req, res) {
 
-  var today = new Date();
+  let today = new Date();
 
-  var options = {
+  let options = {
     weekday: "long",
     day: "numeric",
     month: "long"
   };
 
-  var day = today. toLocaleDateString("en-US", options);
+  let day = today.toLocaleDateString("en-US", options);
 
-  res.render("list", { kindOfDay: day});
+  res.render("list", {
+    kindOfDay: day,
+    newListItems: items
+  });
 
-app.post("/", function(req, res){
-  console.log('post request recieved.');
-  console.log(req.body.newItem);
+  app.post("/", function(req, res) {
+    let item = req.body.newItem;
+    items.push(item);
+    res.redirect("/");
 
-});
+  });
 
 
 
